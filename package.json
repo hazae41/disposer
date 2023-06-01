@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/cleaner",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "An object that can clean",
   "homepage": "https://github.com/hazae41/cleaner",
   "repository": "github:hazae41/cleaner",
