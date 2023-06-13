@@ -51,8 +51,8 @@ export namespace Cleaner {
     }
   }
 
-  export async function race<T>(cleaners: Cleaner<Promise<T>>[]) {
-    const promises = new Array<Promise<T>>(cleaners.length)
+  export async function race<T>(cleaners: Cleaner<T>[]): Promise<Awaited<T>> {
+    const promises = new Array<T>(cleaners.length)
     const cleanups = new Array<Cleanup>(cleaners.length)
 
     for (let i = 0; i < cleaners.length; i++) {
