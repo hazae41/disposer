@@ -9,7 +9,7 @@ export interface Cleanable {
 
 export namespace Cleanable {
 
-  export async function use<T extends Cleanable | undefined, U>(cleanable: T, callback: (cleanable: T) => Promiseable<U>) {
+  export async function runWith<T extends Cleanable | undefined, U>(cleanable: T, callback: (cleanable: T) => Promiseable<U>) {
     try {
       return await callback(cleanable)
     } finally {
@@ -17,7 +17,7 @@ export namespace Cleanable {
     }
   }
 
-  export function useSync<T extends Cleanable | undefined, U>(cleanable: T, callback: (cleanable: T) => U) {
+  export function runWithSync<T extends Cleanable | undefined, U>(cleanable: T, callback: (cleanable: T) => U) {
     try {
       return callback(cleanable)
     } finally {
