@@ -1,8 +1,35 @@
+import { Promiseable } from "libs/promises/promises.js"
+
 export type Cleanup =
   () => void
 
 export interface Cleanable {
-  clean(): void
+  readonly clean: Cleanup
+}
+
+export namespace Cleanable {
+
+  export async function use<T extends Cleanable, U>(cleanable: T, callback: (cleanable: T) => Promiseable<U>) {
+    try {
+      return await callback(cleanable)
+    } finally {
+      cleanable.clean()
+    }
+  }
+
+  export function useSync<T extends Cleanable, U>(cleanable: T, callback: (cleanable: T) => U) {
+    try {
+      return callback(cleanable)
+    } finally {
+      cleanable.clean()
+    }
+  }
+
+}
+
+export interface Cleaner<T> {
+  readonly inner: T
+  readonly clean: Cleanup
 }
 
 export class Cleaner<T> {
@@ -12,7 +39,11 @@ export class Cleaner<T> {
     readonly clean: Cleanup
   ) { }
 
-  static async wait<T>(cleaner: Cleaner<Promise<T>>) {
+}
+
+export namespace Cleaner {
+
+  export async function wait<T>(cleaner: Cleaner<T>): Promise<Awaited<T>> {
     try {
       return await cleaner.inner
     } finally {
@@ -20,7 +51,7 @@ export class Cleaner<T> {
     }
   }
 
-  static async race<T>(cleaners: Cleaner<Promise<T>>[]) {
+  export async function race<T>(cleaners: Cleaner<Promise<T>>[]) {
     const promises = new Array<Promise<T>>(cleaners.length)
     const cleanups = new Array<Cleanup>(cleaners.length)
 
