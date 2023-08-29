@@ -92,7 +92,7 @@ export namespace Disposable {
         if (Symbol.dispose in disposer)
           disposer[Symbol.dispose]()
         else if (Symbol.asyncDispose in disposer)
-          disposer[Symbol.asyncDispose]()
+          await disposer[Symbol.asyncDispose]()
     }
   }
 
