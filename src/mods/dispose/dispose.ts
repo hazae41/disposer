@@ -85,9 +85,6 @@ export namespace Disposable {
     try {
       return await Promise.race(promises)
     } finally {
-      /**
-       * TODO: replace with "using" when rollup supports it
-       */
       await Promise.all(promises.map(it => it[Symbol.asyncDispose]()))
     }
   }
@@ -96,9 +93,6 @@ export namespace Disposable {
     try {
       return await Promise.race(promises)
     } finally {
-      /**
-       * TODO: replace with "using" when rollup supports it
-       */
       let error: { e: unknown } | undefined = undefined
 
       for (const disposer of promises) {
