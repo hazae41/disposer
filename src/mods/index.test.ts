@@ -1,1 +1,1 @@
-export * from "./cleaner/cleaner.test.js";
+export * from "./dispose/dispose.test.js";
