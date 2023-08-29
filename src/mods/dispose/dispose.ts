@@ -85,9 +85,14 @@ export namespace Disposable {
     try {
       return await Promise.race(promises)
     } finally {
-      for (const disposer of promises) {
-        await using _ = disposer
-      }
+      /**
+       * TODO: replace with using when rollup supports it
+       */
+      for (const disposer of promises)
+        if (Symbol.dispose in disposer)
+          disposer[Symbol.dispose]()
+        else if (Symbol.asyncDispose in disposer)
+          disposer[Symbol.asyncDispose]()
     }
   }
 
