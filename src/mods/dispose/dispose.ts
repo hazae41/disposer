@@ -81,18 +81,37 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
 
 export namespace Disposable {
 
-  export async function race<T>(promises: (PromiseLike<T> & MaybeAsyncDisposable)[]): Promise<Awaited<T>> {
+  export async function race<T>(promises: (PromiseLike<T> & AsyncDisposable)[]): Promise<Awaited<T>> {
     try {
       return await Promise.race(promises)
     } finally {
       /**
-       * TODO: replace with using when rollup supports it
+       * TODO: replace with "using" when rollup supports it
        */
-      for (const disposer of promises)
-        if (Symbol.dispose in disposer)
+      await Promise.all(promises.map(it => it[Symbol.asyncDispose]()))
+    }
+  }
+
+  export async function raceSync<T>(promises: (PromiseLike<T> & Disposable)[]): Promise<Awaited<T>> {
+    try {
+      return await Promise.race(promises)
+    } finally {
+      /**
+       * TODO: replace with "using" when rollup supports it
+       */
+      let error: { e: unknown } | undefined = undefined
+
+      for (const disposer of promises) {
+        try {
           disposer[Symbol.dispose]()
-        else if (Symbol.asyncDispose in disposer)
-          await disposer[Symbol.asyncDispose]()
+        } catch (e: unknown) {
+          error = { e }
+        }
+      }
+
+      if (error) {
+        throw error.e
+      }
     }
   }
 
