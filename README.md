@@ -45,9 +45,18 @@ await d
 
 ### Race multiple thenable and disposable objects (PromiseLike & Disposable)
 
+It will dispose both a and b once one of them settles
+
 ```tsx
 /**
- * Will dispose both a and b once one of them settles
+ * When a and b are Disposable
+ **/
+await Disposable.raceSync([a, b])
+```
+
+```tsx
+/**
+ * When a and b are AsyncDisposable
  **/
 await Disposable.race([a, b])
 ```
@@ -78,5 +87,5 @@ function waitB(): PromiseLike<"b"> & Disposable {
 /**
  * When one listener is triggered, the other is removed
  **/
-const x: "a" | "b" = await Disposable.race([waitA(), waitB()])
+const x: "a" | "b" = await Disposable.raceSync([waitA(), waitB()])
 ```
