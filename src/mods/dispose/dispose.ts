@@ -1,3 +1,5 @@
+import { Unpromise } from "libs/unpromise/unpromise.js"
+
 export type MaybeAsyncDisposable =
   | Disposable
   | AsyncDisposable
@@ -81,11 +83,22 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
 
 export namespace Disposable {
 
-  export async function race<T>(promises: (PromiseLike<T> & AsyncDisposable)[]): Promise<Awaited<T>> {
+  export async function dispose(disposable: MaybeAsyncDisposable) {
+    if (Symbol.dispose in disposable)
+      disposable[Symbol.dispose]()
+    else if (Symbol.asyncDispose)
+      await disposable[Symbol.asyncDispose]()
+  }
+
+  export function disposeSync(disposable: Disposable) {
+    disposable[Symbol.dispose]()
+  }
+
+  export async function race<T>(promises: (PromiseLike<T> & MaybeAsyncDisposable)[]): Promise<Awaited<T>> {
     try {
       return await Promise.race(promises)
     } finally {
-      await Promise.all(promises.map(it => it[Symbol.asyncDispose]()))
+      await Promise.all(promises.map(dispose))
     }
   }
 
@@ -93,19 +106,7 @@ export namespace Disposable {
     try {
       return await Promise.race(promises)
     } finally {
-      let error: { e: unknown } | undefined = undefined
-
-      for (const disposer of promises) {
-        try {
-          disposer[Symbol.dispose]()
-        } catch (e: unknown) {
-          error = { e }
-        }
-      }
-
-      if (error) {
-        throw error.e
-      }
+      Unpromise.all(promises.map(it => () => disposeSync(it)))
     }
   }
 
