@@ -25,7 +25,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   constructor(
     readonly inner: T,
-    readonly dispose: () => PromiseLike<void>
+    readonly asyncDispose: () => PromiseLike<void>
   ) { }
 
   static from<T>(disposable: T & AsyncDisposable) {
@@ -33,7 +33,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
   }
 
   async [Symbol.asyncDispose]() {
-    await this.dispose()
+    await this.asyncDispose()
   }
 
 }
@@ -64,7 +64,7 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
 
   constructor(
     readonly inner: PromiseLike<T>,
-    readonly dispose: () => PromiseLike<void>
+    readonly asyncDispose: () => PromiseLike<void>
   ) { }
 
   static from<T>(disposable: PromiseLike<T> & AsyncDisposable) {
@@ -76,7 +76,7 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
   }
 
   async [Symbol.asyncDispose]() {
-    await this.dispose()
+    await this.asyncDispose()
   }
 
 }
