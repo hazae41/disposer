@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/cleaner",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Helpers for Disposable",
   "homepage": "https://github.com/hazae41/cleaner",
   "repository": "github:hazae41/cleaner",
