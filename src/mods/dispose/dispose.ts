@@ -19,6 +19,14 @@ export class Disposer<T> implements Disposable {
     this.dispose()
   }
 
+  mapSync<U>(mapper: (value: T) => U): Disposer<U> {
+    return new Disposer(mapper(this.inner), this.dispose)
+  }
+
+  async map<U>(mapper: (value: T) => PromiseLike<U>): Promise<Disposer<U>> {
+    return new Disposer(await mapper(this.inner), this.dispose)
+  }
+
 }
 
 export class AsyncDisposer<T> implements AsyncDisposable {
@@ -34,6 +42,14 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   async [Symbol.asyncDispose]() {
     await this.asyncDispose()
+  }
+
+  mapSync<U>(mapper: (value: T) => U): AsyncDisposer<U> {
+    return new AsyncDisposer(mapper(this.inner), this.asyncDispose)
+  }
+
+  async map<U>(mapper: (value: T) => PromiseLike<U>): Promise<AsyncDisposer<U>> {
+    return new AsyncDisposer(await mapper(this.inner), this.asyncDispose)
   }
 
 }
