@@ -7,7 +7,7 @@ export class Disposer<T> implements Disposable {
 
   constructor(
     readonly inner: T,
-    readonly dispose: () => void
+    readonly dispose: (inner: T) => void
   ) { }
 
   static from<T>(disposable: T & Disposable) {
@@ -15,15 +15,7 @@ export class Disposer<T> implements Disposable {
   }
 
   [Symbol.dispose]() {
-    this.dispose()
-  }
-
-  mapSync<U>(mapper: (value: T) => U): Disposer<U> {
-    return new Disposer(mapper(this.inner), this.dispose)
-  }
-
-  async map<U>(mapper: (value: T) => PromiseLike<U>): Promise<Disposer<U>> {
-    return new Disposer(await mapper(this.inner), this.dispose)
+    this.dispose(this.inner)
   }
 
 }
@@ -32,7 +24,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   constructor(
     readonly inner: T,
-    readonly asyncDispose: () => PromiseLike<void>
+    readonly dispose: (inner: T) => PromiseLike<void>
   ) { }
 
   static from<T>(disposable: T & AsyncDisposable) {
@@ -40,15 +32,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
   }
 
   async [Symbol.asyncDispose]() {
-    await this.asyncDispose()
-  }
-
-  mapSync<U>(mapper: (value: T) => U): AsyncDisposer<U> {
-    return new AsyncDisposer(mapper(this.inner), this.asyncDispose)
-  }
-
-  async map<U>(mapper: (value: T) => PromiseLike<U>): Promise<AsyncDisposer<U>> {
-    return new AsyncDisposer(await mapper(this.inner), this.asyncDispose)
+    await this.dispose(this.inner)
   }
 
 }
@@ -57,7 +41,7 @@ export class PromiseDisposer<T> implements PromiseLike<T>, Disposable {
 
   constructor(
     readonly inner: PromiseLike<T>,
-    readonly dispose: () => void
+    readonly dispose: (inner: PromiseLike<T>) => void
   ) { }
 
   static from<T>(disposable: PromiseLike<T> & Disposable) {
@@ -69,7 +53,7 @@ export class PromiseDisposer<T> implements PromiseLike<T>, Disposable {
   }
 
   [Symbol.dispose]() {
-    this.dispose()
+    this.dispose(this.inner)
   }
 
 }
@@ -79,7 +63,7 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
 
   constructor(
     readonly inner: PromiseLike<T>,
-    readonly asyncDispose: () => PromiseLike<void>
+    readonly dispose: (inner: PromiseLike<T>) => PromiseLike<void>
   ) { }
 
   static from<T>(disposable: PromiseLike<T> & AsyncDisposable) {
@@ -91,19 +75,7 @@ export class AsyncPromiseDisposer<T> implements PromiseLike<T>, AsyncDisposable 
   }
 
   async [Symbol.asyncDispose]() {
-    await this.asyncDispose()
-  }
-
-}
-
-export namespace Disposable {
-
-  export async function dispose(disposable: SyncOrAsyncDisposable) {
-    await using _ = disposable
-  }
-
-  export function disposeSync(disposable: Disposable) {
-    using _ = disposable
+    await this.dispose(this.inner)
   }
 
 }
