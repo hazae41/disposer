@@ -34,6 +34,9 @@ You can get the inner object with `.inner` or `.get()` and the dispose function 
 This can be useful for waiting for multiple listeners, and remove all listeners when one of them is triggered
 
 ```tsx
+import { Future } from "@hazae41/future"
+import { Disposer } from "@hazae41/disposer"
+
 function waitA(): Disposer<Promise<"a">> {
   const future = new Future<"a">()
   const onevent = () => future.resolve("a")
