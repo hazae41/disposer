@@ -1,12 +1,12 @@
-# Cleaner
+# Disposer
 
 Helpers for Disposable
 
 ```bash
-npm i @hazae41/cleaner
+npm i @hazae41/disposer
 ```
 
-[**Node Package 📦**](https://www.npmjs.com/package/@hazae41/cleaner)
+[**Node Package 📦**](https://www.npmjs.com/package/@hazae41/disposer)
 
 ## Features
 
@@ -29,63 +29,37 @@ using d = new Disposer(something, () => { ... })
 await using d = new AsyncDisposer(something, async () => { ... })
 ```
 
-### Create a thenable disposable object from a thenable object (PromiseLike)
-
-```tsx
-using d = new PromiseDisposer(doSomethingAsync(), () => { ... })
-
-await d
-```
-
-```tsx
-await using d = new AsyncPromiseDisposer(doSomethingAsync(), async () => { ... })
-
-await d
-```
-
-### Race multiple thenable and disposable objects (PromiseLike & Disposable)
-
-It will dispose both a and b once one of them settles
-
-```tsx
-/**
- * When a and b are Disposable
- **/
-await Disposable.raceSync([a, b])
-```
-
-```tsx
-/**
- * When a and b are AsyncDisposable
- **/
-await Disposable.race([a, b])
-```
-
 This can be useful for waiting for multiple listeners, and remove all listeners when one of them is triggered
 
 ```tsx
-function waitA(): PromiseLike<"a"> & Disposable {
+function waitA(): Disposer<Promise<"a">> {
   const future = new Future<"a">()
   const onevent = () => future.resolve("a")
 
   this.addEventListener("a", onevent)
   const off = () => this.removeEventListener("a", onevent)
   
-  return new PromiseDisposer(future.promise, off)
+  return new Disposer(future.promise, off)
 }
 
-function waitB(): PromiseLike<"b"> & Disposable {
+function waitB(): Disposer<Promise<"b">> {
   const future = new Future<"b">()
   const onevent = () => future.resolve()
 
   this.addEventListener("b", onevent)
   const off = () => this.removeEventListener("b", onevent)
   
-  return new PromiseDisposer(future.promise, off)
+  return new Disposer(future.promise, off)
 }
 
-/**
- * When one listener is triggered, the other is removed
- **/
-const x: "a" | "b" = await Disposable.raceSync([waitA(), waitB()])
+async function wait() {
+  using a = waitA()
+  using b = waitB()
+
+  const x: "a" | "b" = await Promise.race([a.get(), b.get()])
+
+  /**
+   * All listeners will be removed
+   */
+}
 ```

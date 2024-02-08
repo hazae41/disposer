@@ -1,10 +1,10 @@
 {
   "type": "module",
-  "name": "@hazae41/cleaner",
+  "name": "@hazae41/disposer",
   "version": "2.0.9",
   "description": "Helpers for Disposable",
-  "homepage": "https://github.com/hazae41/cleaner",
-  "repository": "github:hazae41/cleaner",
+  "homepage": "https://github.com/hazae41/disposer",
+  "repository": "github:hazae41/disposer",
   "author": "hazae41",
   "license": "MIT",
   "main": "./dist/cjs/index.cjs",
