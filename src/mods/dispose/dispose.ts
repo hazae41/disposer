@@ -18,12 +18,8 @@ export class Disposer<T> implements Disposable {
     this.dispose(this.inner)
   }
 
-  then<TResult1 = T, TResult2 = never>(
-    this: Disposer<PromiseLike<T>>,
-    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined
-  ): PromiseLike<TResult1 | TResult2> {
-    return this.inner.then(onfulfilled, onrejected)
+  get() {
+    return this.inner
   }
 
 }
@@ -43,12 +39,8 @@ export class AsyncDisposer<T> implements AsyncDisposable {
     await this.dispose(this.inner)
   }
 
-  then<TResult1 = T, TResult2 = never>(
-    this: AsyncDisposer<PromiseLike<T>>,
-    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined
-  ): PromiseLike<TResult1 | TResult2> {
-    return this.inner.then(onfulfilled, onrejected)
+  get() {
+    return this.inner
   }
 
 }
