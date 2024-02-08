@@ -1,8 +1,3 @@
-
-export type SyncOrAsyncDisposable =
-  | Disposable
-  | AsyncDisposable
-
 export class Disposer<T> implements Disposable {
 
   constructor(
