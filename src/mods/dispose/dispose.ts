@@ -14,16 +14,16 @@ export class Disposer<T> implements Disposable {
     return new Disposer(disposable, () => disposable[Symbol.dispose]())
   }
 
+  [Symbol.dispose]() {
+    this.dispose(this.inner)
+  }
+
   then<TResult1 = T, TResult2 = never>(
     this: Disposer<PromiseLike<T>>,
     onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null | undefined,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined
   ): PromiseLike<TResult1 | TResult2> {
     return this.inner.then(onfulfilled, onrejected)
-  }
-
-  [Symbol.dispose]() {
-    this.dispose(this.inner)
   }
 
 }
