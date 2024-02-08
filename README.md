@@ -1,6 +1,6 @@
 # Disposer
 
-Helpers for Disposable
+A wrapper for an object with a dispose function
 
 ```bash
 npm i @hazae41/disposer
@@ -14,8 +14,6 @@ npm i @hazae41/disposer
 - 100% TypeScript and ESM
 - No external dependencies
 - Create a disposable object from any object
-- Create a thenable disposable object from a thenable object
-- Race multiple thenable and disposable objects
 
 ## Usage
 
@@ -28,6 +26,10 @@ using d = new Disposer(something, () => { ... })
 ```tsx
 await using d = new AsyncDisposer(something, async () => { ... })
 ```
+
+You can get the inner object with `.inner` or `.get()` and the dispose function with `.dispose`
+
+## Example
 
 This can be useful for waiting for multiple listeners, and remove all listeners when one of them is triggered
 
