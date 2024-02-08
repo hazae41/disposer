@@ -1,7 +1,7 @@
 import "@hazae41/symbol-dispose-polyfill"
 
 import { test } from "@hazae41/phobos"
-import { AsyncPromiseDisposer, PromiseDisposer } from "./dispose.js"
+import { AsyncDisposer, Disposer } from "./dispose.js"
 
 await test("sync", async ({ message, test }) => {
   console.log(message)
@@ -16,7 +16,7 @@ await test("sync", async ({ message, test }) => {
       console.log(`disposed ${i}`)
     }
 
-    return new PromiseDisposer(create(), dispose)
+    return new Disposer(create(), dispose)
   }
 
   using a = f(1)
@@ -40,7 +40,7 @@ await test("async", async ({ message, test }) => {
       console.log(`disposed ${i}`)
     }
 
-    return new AsyncPromiseDisposer(create(), dispose)
+    return new AsyncDisposer(create(), dispose)
   }
 
   await using a = f(1)
