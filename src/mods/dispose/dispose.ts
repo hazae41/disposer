@@ -9,6 +9,14 @@ export class Disposer<T> implements Disposable {
     return new Disposer(disposable, () => disposable[Symbol.dispose]())
   }
 
+  static async wait<T>(this: Disposer<PromiseLike<T>>) {
+    try {
+      await this.get()
+    } finally {
+      this.dispose()
+    }
+  }
+
   [Symbol.dispose]() {
     this.dispose()
   }
@@ -32,6 +40,14 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   static from<T>(disposable: T & AsyncDisposable) {
     return new AsyncDisposer(disposable, () => disposable[Symbol.asyncDispose]())
+  }
+
+  static async wait<T>(this: AsyncDisposer<PromiseLike<T>>) {
+    try {
+      await this.get()
+    } finally {
+      await this.dispose()
+    }
   }
 
   async [Symbol.asyncDispose]() {
