@@ -1,3 +1,5 @@
+import { PromiseOrPromiseLike } from "libs/promises/index.js"
+
 export class Disposer<T> implements Disposable {
 
   constructor(
@@ -21,7 +23,7 @@ export class Disposer<T> implements Disposable {
     return this.inner
   }
 
-  async await<T>(this: Disposer<PromiseLike<T>>) {
+  async await<T>(this: Disposer<PromiseOrPromiseLike<T>>) {
     try {
       await this.get()
     } finally {
@@ -54,7 +56,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
     return this.inner
   }
 
-  async await<T>(this: AsyncDisposer<PromiseLike<T>>) {
+  async await<T>(this: AsyncDisposer<PromiseOrPromiseLike<T>>) {
     try {
       await this.get()
     } finally {
