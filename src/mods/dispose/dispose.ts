@@ -2,7 +2,7 @@ export class Disposer<T> implements Disposable {
 
   constructor(
     readonly inner: T,
-    readonly dispose: (inner: T) => void
+    readonly clean: (inner: T) => void
   ) { }
 
   static from<T>(disposable: T & Disposable) {
@@ -10,7 +10,11 @@ export class Disposer<T> implements Disposable {
   }
 
   [Symbol.dispose]() {
-    this.dispose(this.inner)
+    this.dispose()
+  }
+
+  dispose() {
+    this.clean(this.inner)
   }
 
   get() {
@@ -23,7 +27,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   constructor(
     readonly inner: T,
-    readonly dispose: (inner: T) => PromiseLike<void>
+    readonly clean: (inner: T) => PromiseLike<void>
   ) { }
 
   static from<T>(disposable: T & AsyncDisposable) {
@@ -31,7 +35,11 @@ export class AsyncDisposer<T> implements AsyncDisposable {
   }
 
   async [Symbol.asyncDispose]() {
-    await this.dispose(this.inner)
+    await this.dispose()
+  }
+
+  async dispose() {
+    await this.clean(this.inner)
   }
 
   get() {
