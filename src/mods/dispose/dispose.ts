@@ -9,14 +9,6 @@ export class Disposer<T> implements Disposable {
     return new Disposer(disposable, () => disposable[Symbol.dispose]())
   }
 
-  async await<T>(this: Disposer<PromiseLike<T>>) {
-    try {
-      await this.get()
-    } finally {
-      this.dispose()
-    }
-  }
-
   [Symbol.dispose]() {
     this.dispose()
   }
@@ -27,6 +19,14 @@ export class Disposer<T> implements Disposable {
 
   get() {
     return this.inner
+  }
+
+  async await<T>(this: Disposer<PromiseLike<T>>) {
+    try {
+      await this.get()
+    } finally {
+      this.dispose()
+    }
   }
 
 }
@@ -42,14 +42,6 @@ export class AsyncDisposer<T> implements AsyncDisposable {
     return new AsyncDisposer(disposable, () => disposable[Symbol.asyncDispose]())
   }
 
-  async await<T>(this: AsyncDisposer<PromiseLike<T>>) {
-    try {
-      await this.get()
-    } finally {
-      await this.dispose()
-    }
-  }
-
   async [Symbol.asyncDispose]() {
     await this.dispose()
   }
@@ -60,6 +52,14 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   get() {
     return this.inner
+  }
+
+  async await<T>(this: AsyncDisposer<PromiseLike<T>>) {
+    try {
+      await this.get()
+    } finally {
+      await this.dispose()
+    }
   }
 
 }
