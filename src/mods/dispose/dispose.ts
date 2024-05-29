@@ -23,7 +23,7 @@ export class Disposer<T> implements Disposable {
 
   async await<T>(this: Disposer<Promise<T>>) {
     try {
-      await this.get()
+      return await this.get()
     } finally {
       this.dispose()
     }
@@ -56,7 +56,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
 
   async await<T>(this: AsyncDisposer<Promise<T>>) {
     try {
-      await this.get()
+      return await this.get()
     } finally {
       await this.dispose()
     }
