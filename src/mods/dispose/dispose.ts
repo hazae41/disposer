@@ -9,7 +9,7 @@ export class Disposer<T> implements Disposable {
     return new Disposer(disposable, () => disposable[Symbol.dispose]())
   }
 
-  static async wait<T>(this: Disposer<PromiseLike<T>>) {
+  static async await<T>(this: Disposer<PromiseLike<T>>) {
     try {
       await this.get()
     } finally {
@@ -42,7 +42,7 @@ export class AsyncDisposer<T> implements AsyncDisposable {
     return new AsyncDisposer(disposable, () => disposable[Symbol.asyncDispose]())
   }
 
-  static async wait<T>(this: AsyncDisposer<PromiseLike<T>>) {
+  static async await<T>(this: AsyncDisposer<PromiseLike<T>>) {
     try {
       await this.get()
     } finally {
